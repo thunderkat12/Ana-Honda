@@ -1,15 +1,24 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { motorcycles } from "@/data/motorcycles";
 import { MotorcycleCard } from "@/components/motorcycle-card";
 import { SiWhatsapp } from "react-icons/si";
-import { Search, X } from "lucide-react";
+import { Search, X, Camera, User } from "lucide-react";
 
 const CATEGORIES = ["Todos", "Street", "Adventure", "Off-Road", "Big Trail"];
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sellerPhoto, setSellerPhoto] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setSellerPhoto(url);
+  }
 
   const filtered = useMemo(() => {
     let result = activeCategory === "Todos"
@@ -44,12 +53,45 @@ export default function Home() {
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center gap-4"
+            className="flex flex-col items-center gap-3"
           >
-            <div className="w-14 h-14 flex items-center justify-center bg-primary rounded-xl shadow-[0_0_30px_rgba(204,0,0,0.5)]">
-              <span className="text-3xl font-black text-white italic tracking-tighter leading-none">H</span>
+            {/* Seller avatar */}
+            <div className="relative group">
+              <div
+                className="w-24 h-24 rounded-full border-[3px] border-primary shadow-[0_0_30px_rgba(204,0,0,0.5)] overflow-hidden bg-[#1a1a1a] flex items-center justify-center cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {sellerPhoto ? (
+                  <img
+                    src={sellerPhoto}
+                    alt="Foto da vendedora"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-10 h-10 text-white/20" />
+                )}
+              </div>
+              {/* Camera overlay */}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-background shadow-lg hover:bg-primary/80 transition-colors"
+                title="Adicionar foto"
+              >
+                <Camera className="w-4 h-4 text-white" />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoChange}
+              />
             </div>
-            <span className="text-2xl font-black tracking-widest text-white/80 uppercase">Honda</span>
+
+            {/* Name */}
+            <span className="text-xl font-black tracking-widest text-white/90" style={{ fontStyle: "italic" }}>
+              Anaa_Honda
+            </span>
           </motion.div>
 
           <motion.h1
