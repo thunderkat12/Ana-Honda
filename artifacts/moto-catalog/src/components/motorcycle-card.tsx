@@ -1,13 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { SiWhatsapp } from 'react-icons/si';
-
-interface Motorcycle {
-  id: number;
-  name: string;
-  category: string;
-  image: string;
-}
+import { Zap, Weight, Fuel, Gauge, ChevronDown, ChevronUp } from 'lucide-react';
+import type { Motorcycle } from '@/data/motorcycles';
 
 interface Props {
   motorcycle: Motorcycle;
@@ -15,30 +10,21 @@ interface Props {
 
 export function MotorcycleCard({ motorcycle }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  
-  // Mouse position values
+  const [isHovered, setIsHovered] = useState(false);
+  const [showSpecs, setShowSpecs] = useState(false);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
-  // Smooth springs for the rotation
+
   const springConfig = { damping: 20, stiffness: 100, mass: 1 };
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [15, -15]), springConfig);
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-15, 15]), springConfig);
-  
-  // Hover state for lifting the image
-  const [isHovered, setIsHovered] = React.useState(false);
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [12, -12]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-12, 12]), springConfig);
 
   function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
     if (!ref.current) return;
-    
     const rect = ref.current.getBoundingClientRect();
-    
-    // Calculate normalized mouse position (-0.5 to 0.5)
-    const mouseX = (event.clientX - rect.left) / rect.width - 0.5;
-    const mouseY = (event.clientY - rect.top) / rect.height - 0.5;
-    
-    x.set(mouseX);
-    y.set(mouseY);
+    x.set((event.clientX - rect.left) / rect.width - 0.5);
+    y.set((event.clientY - rect.top) / rect.height - 0.5);
   }
 
   function handleMouseLeave() {
@@ -47,85 +33,180 @@ export function MotorcycleCard({ motorcycle }: Props) {
     setIsHovered(false);
   }
 
-  const wppText = encodeURIComponent(`Olá! Tenho interesse na moto ${motorcycle.name}. Gostaria de mais informações sobre preços, financiamento e consórcio.`);
+  const wppText = encodeURIComponent(
+    `Olá! Tenho interesse na moto *${motorcycle.name}*.\n\n` +
+    `*Especificações:*\n` +
+    `• Motor: ${motorcycle.specs.motor}\n` +
+    `• Cilindrada: ${motorcycle.specs.cilindrada}\n` +
+    `• Potência: ${motorcycle.specs.potencia}\n` +
+    `• Torque: ${motorcycle.specs.torque}\n` +
+    `• Freios: ${motorcycle.specs.freios}\n\n` +
+    `Gostaria de mais informações sobre preços, financiamento e consórcio.`
+  );
   const wppLink = `https://wa.me/556199918978?text=${wppText}`;
 
+  const consortiumText = encodeURIComponent(
+    `Olá! Gostaria de informações sobre os *Planos de Consórcio* para a moto *${motorcycle.name}* (${motorcycle.specs.cilindrada}).`
+  );
+  const consortiumLink = `https://wa.me/556199918978?text=${consortiumText}`;
+
+  const financingText = encodeURIComponent(
+    `Olá! Gostaria de informações sobre o *Financiamento* da moto *${motorcycle.name}* (${motorcycle.specs.cilindrada}). Quais são as condições disponíveis?`
+  );
+  const financingLink = `https://wa.me/556199918978?text=${financingText}`;
+
   return (
-    <div 
-      className="perspective-1000 w-full h-full"
+    <div
+      className="w-full h-full"
+      style={{ perspective: "1000px" }}
       data-testid={`card-motorcycle-${motorcycle.id}`}
     >
       <motion.div
         ref={ref}
-        className="relative w-full h-full rounded-2xl bg-gradient-to-b from-card/80 to-background border border-card-border p-6 flex flex-col items-center justify-between overflow-hidden shadow-2xl transform-style-3d cursor-pointer group"
-        style={{
-          rotateX,
-          rotateY,
-        }}
+        className="relative w-full rounded-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] border border-white/8 flex flex-col overflow-hidden shadow-2xl cursor-pointer group"
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
+        viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 0.5 }}
       >
-        {/* Ambient glow behind the bike */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary/20 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
-        {/* Category Badge */}
-        <div 
-          className="absolute top-4 left-4 px-3 py-1 text-xs font-bold tracking-wider uppercase bg-black/50 border border-white/10 rounded-full text-muted-foreground backdrop-blur-md z-10 transform-style-3d"
-          style={{ transform: "translateZ(30px)" }}
+        {/* Glow on hover */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-52 h-52 bg-primary/25 rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+        {/* Category badge */}
+        <div
+          className="absolute top-4 left-4 z-10 px-3 py-1 text-[10px] font-bold tracking-widest uppercase bg-black/60 border border-white/10 rounded-full text-white/60 backdrop-blur-md"
+          style={{ transform: "translateZ(20px)" }}
         >
           {motorcycle.category}
         </div>
 
-        {/* Motorcycle Image Container */}
-        <motion.div 
-          className="w-full h-48 sm:h-56 mt-4 mb-6 flex items-center justify-center transform-style-3d z-10"
-          animate={{ 
-            translateZ: isHovered ? 80 : 0,
-            y: isHovered ? -10 : 0,
-            scale: isHovered ? 1.05 : 1
-          }}
-          transition={{ type: "spring", ...springConfig }}
-        >
-          <img 
-            src={motorcycle.image} 
+        {/* Motorcycle image */}
+        <div className="relative w-full pt-10 px-4 pb-2 flex items-center justify-center" style={{ height: "220px" }}>
+          <motion.img
+            src={motorcycle.image}
             alt={motorcycle.name}
-            className="w-full h-full object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]"
+            className="w-full h-full object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.9)]"
             loading="lazy"
+            animate={{
+              y: isHovered ? -12 : 0,
+              scale: isHovered ? 1.06 : 1,
+            }}
+            transition={{ type: "spring", ...springConfig }}
+            style={{ transformStyle: "preserve-3d", transform: "translateZ(60px)" }}
           />
-        </motion.div>
+        </div>
 
         {/* Content */}
-        <div 
-          className="w-full flex flex-col gap-4 transform-style-3d z-10"
-          style={{ transform: "translateZ(40px)" }}
-        >
-          <h3 className="text-2xl font-black text-foreground tracking-tight text-center">
+        <div className="flex flex-col gap-3 px-5 pb-5 pt-2" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+          {/* Model name */}
+          <h3 className="text-xl font-black text-white tracking-tight leading-tight text-center">
             {motorcycle.name}
           </h3>
-          
-          <div className="flex flex-col gap-2 w-full mt-2">
-            <a 
+
+          {/* Quick specs strip */}
+          <div className="grid grid-cols-2 gap-2 text-[11px]">
+            <div className="flex items-center gap-1.5 text-white/50">
+              <Gauge className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+              <span className="truncate">{motorcycle.specs.cilindrada}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-white/50">
+              <Zap className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+              <span className="truncate">{motorcycle.specs.potencia.split(" @ ")[0]}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-white/50">
+              <Fuel className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+              <span className="truncate">{motorcycle.specs.tanque}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-white/50">
+              <Weight className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+              <span className="truncate">{motorcycle.specs.peso}</span>
+            </div>
+          </div>
+
+          {/* Expandable full specs */}
+          <button
+            onClick={() => setShowSpecs(!showSpecs)}
+            className="w-full flex items-center justify-center gap-1.5 text-[11px] font-semibold text-white/40 hover:text-white/70 transition-colors py-1"
+            data-testid={`btn-specs-toggle-${motorcycle.id}`}
+          >
+            {showSpecs ? (
+              <>Ver menos <ChevronUp className="w-3.5 h-3.5" /></>
+            ) : (
+              <>Ver especificações completas <ChevronDown className="w-3.5 h-3.5" /></>
+            )}
+          </button>
+
+          {showSpecs && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="border border-white/8 rounded-xl p-3 bg-white/3 text-[11px] space-y-2"
+              data-testid={`specs-panel-${motorcycle.id}`}
+            >
+              {[
+                ["Motor", motorcycle.specs.motor],
+                ["Cilindrada", motorcycle.specs.cilindrada],
+                ["Potência", motorcycle.specs.potencia],
+                ["Torque", motorcycle.specs.torque],
+                ["Freios", motorcycle.specs.freios],
+                ["Câmbio", motorcycle.specs.cambio],
+                ["Peso", motorcycle.specs.peso],
+                ["Tanque", motorcycle.specs.tanque],
+              ].map(([label, value]) => (
+                <div key={label} className="flex justify-between gap-2">
+                  <span className="text-white/40 font-medium shrink-0">{label}</span>
+                  <span className="text-white/75 text-right">{value}</span>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Divider */}
+          <div className="w-full h-px bg-white/8 my-1" />
+
+          {/* CTAs */}
+          <div className="flex flex-col gap-2">
+            {/* Primary: Falar com Especialista */}
+            <a
               href={wppLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3 px-4 bg-primary hover:bg-primary/90 text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-colors duration-200"
+              className="w-full py-3 px-4 bg-primary hover:bg-primary/85 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_4px_20px_rgba(204,0,0,0.3)] hover:shadow-[0_4px_30px_rgba(204,0,0,0.5)] text-sm"
               onClick={(e) => e.stopPropagation()}
               data-testid={`btn-wpp-${motorcycle.id}`}
             >
-              <SiWhatsapp className="w-5 h-5" />
-              <span>Falar com Especialista</span>
+              <SiWhatsapp className="w-4 h-4 text-[#25D366]" />
+              Falar com Especialista
             </a>
-            <button 
-              className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg font-bold transition-colors duration-200"
-              data-testid={`btn-details-${motorcycle.id}`}
-            >
-              Detalhes
-            </button>
+
+            {/* Secondary row: Consórcio + Financiamento */}
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href={consortiumLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2.5 px-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/80 hover:text-white rounded-xl font-semibold text-xs text-center transition-all duration-200 flex items-center justify-center leading-tight"
+                onClick={(e) => e.stopPropagation()}
+                data-testid={`btn-consortium-${motorcycle.id}`}
+              >
+                Planos de Consórcio
+              </a>
+              <a
+                href={financingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2.5 px-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white/80 hover:text-white rounded-xl font-semibold text-xs text-center transition-all duration-200 flex items-center justify-center leading-tight"
+                onClick={(e) => e.stopPropagation()}
+                data-testid={`btn-financing-${motorcycle.id}`}
+              >
+                Financiamento
+              </a>
+            </div>
           </div>
         </div>
       </motion.div>
