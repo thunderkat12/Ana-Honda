@@ -1,0 +1,35 @@
+export const motorcycles = [
+  // Street
+  { id: 1, name: "POP 110i ES", category: "Street", image: "https://vendedor.site/storage/products/JOngXmTC5JIdufOn1FFyuzIkAo9iRjDuW3xOT9wi.png" },
+  { id: 2, name: "POP 110i ES +10%", category: "Street", image: "https://vendedor.site/storage/products/NSdHtu7pgJjKN6448sUCZJvGvjosdfiwZWkTYc3p.png" },
+  { id: 3, name: "BIZ 125 ES", category: "Street", image: "https://vendedor.site/storage/products/KMLe8p4C27UACaWkYhZhAn4aBRwI4au4zD91SoIb.png" },
+  { id: 4, name: "ELITE 125", category: "Street", image: "https://vendedor.site/storage/products/gvfYG6h8ifcR5uAPsM1EmrgJww4qVzWV3nGYwnG9.png" },
+  { id: 5, name: "BIZ 125 EX", category: "Street", image: "https://vendedor.site/storage/products/rOLnG3mP6hSeYpVy0bfYyvwaKBn9S6IKoPH8cGzr.png" },
+  { id: 6, name: "CG 160 START", category: "Street", image: "https://vendedor.site/storage/products/x9l2upZZgCVE01p8QsgfNSLfn1eZWrexcNbgm1fD.png" },
+  { id: 7, name: "PCX CBS", category: "Street", image: "https://vendedor.site/storage/products/Sflm7trmjrMP7hw3aGKpUBSl7yrPoDTc9ApXZUhy.png" },
+  { id: 8, name: "CG 160 FAN", category: "Street", image: "https://vendedor.site/storage/products/xuS073jzyK7OZtudAAnJ9IZlPVOBLQ7b4mH3fqvm.png" },
+  { id: 9, name: "CG 160 TITAN", category: "Street", image: "https://vendedor.site/storage/products/aB5v5NIO7Gf2TlJ154bucmWYMdvZTToBoJP4PIMr.png" },
+  { id: 10, name: "PCX ABS", category: "Street", image: "https://vendedor.site/storage/products/2KGp7k8xxAAxJfbA61qDD2KR1Nbl9BUledXVH070.png" },
+  { id: 11, name: "CB 300F TWISTER CBS", category: "Street", image: "https://vendedor.site/storage/products/d4wGzH59fpMRRunge9Pz7pKs4CjkYiM7aFcTt2nN.png" },
+  { id: 12, name: "CB 300F TWISTER ABS", category: "Street", image: "https://vendedor.site/storage/products/NdNC49RPuYAwFa5mKmoHAzHmx2aL3oJ3b7ASJgfi.png" },
+  { id: 13, name: "CB 500 HORNET", category: "Street", image: "https://vendedor.site/storage/products/R9efAU5w3OmMtmuCimCDl2Xd1BGyP6gNjUmgiFws.png" },
+  { id: 14, name: "CB 750 HORNET", category: "Street", image: "https://vendedor.site/storage/products/OnYBHeEDvt7jLJ9EJOdIvEcmhzPk6gXnHQVh2acy.png" },
+  { id: 15, name: "CB 650R E-CLUTCH", category: "Street", image: "https://vendedor.site/storage/products/Andg8LJMwBMjIKNp38nOGstSX1XNy3oJBp6Wuka5.png" },
+  { id: 16, name: "CB 1000R (70% do valor)", category: "Street", image: "https://vendedor.site/storage/products/MgtKpKelxKbxExN5gOS8pHPtrqhhL00R8RYiQhoF.png" },
+  // Adventure
+  { id: 17, name: "NXR 160 BROS CBS", category: "Adventure", image: "https://vendedor.site/storage/products/uPwpsnV0yPGYPUS7qUbIr2eq2CV2uOkySdSnpeH9.png" },
+  { id: 18, name: "NXR 160 BROS ABS", category: "Adventure", image: "https://vendedor.site/storage/products/7DGCKtLMUZ81i5u7gSkSeKSnD41NvSvPHjzxkstD.png" },
+  { id: 19, name: "XRE 190", category: "Adventure", image: "https://vendedor.site/storage/products/OLNAfGURRqn8UeRwU2bgwKEN4wJ8yYP5FVZS7vaS.png" },
+  { id: 20, name: "HONDA ADV", category: "Adventure", image: "https://vendedor.site/storage/products/m5F3bNTVeLRbibDZIAWAMv2jWLsEuWjny1Y9Ukj0.png" },
+  { id: 21, name: "XR 300L TORNADO", category: "Adventure", image: "https://vendedor.site/storage/products/RQmyfhTdrcht7UqJNorbpJEYOk0S6lG2uO5RBIWn.png" },
+  { id: 22, name: "SAHARA 300", category: "Adventure", image: "https://vendedor.site/storage/products/vgG6xKUWnqxATmPRRg5IPVPj4oX4HgsjH9qA069R.png" },
+  { id: 23, name: "SAHARA 300 ADV", category: "Adventure", image: "https://vendedor.site/storage/products/hIAwtMdshupuqYKHzFd0QG2iCATvYmsN97iJhLg5.png" },
+  { id: 24, name: "NX 500", category: "Adventure", image: "https://vendedor.site/storage/products/BIz547uTf0qN3JvnQJflgRuKRNYk83IxXxdJZ5n6.png" },
+  { id: 25, name: "NC 750X ABS MT", category: "Adventure", image: "https://vendedor.site/storage/products/N0q97ctEszip2ExGWuY9RaK5bZ26B0Zs2pnuwjls.png" },
+  { id: 26, name: "CRF 1100L AFRICA TWIN MT (70% do valor)", category: "Adventure", image: "https://vendedor.site/storage/products/2sRlwcTZ7d16R7s9YATgMOGM9PP8TM6YRmT0Frk6.png" },
+  // Off-Road
+  { id: 27, name: "CRF 300F", category: "Off-Road", image: "https://vendedor.site/storage/products/6aTAV3X9t3JIqf4dMbk9EsIEhDWFf1g7yhvgHsDn.png" },
+  { id: 28, name: "TRX 420 FOURTRAX", category: "Off-Road", image: "https://vendedor.site/storage/products/D0b1gPnO4JKh2b9kMWJO3mfqnoZjlfmjCX7yYzJz.png" },
+  // Big Trail
+  { id: 29, name: "XL 750 TRANSALP", category: "Big Trail", image: "https://vendedor.site/storage/products/eGKpBSVfX2mztA5DWLonifNxg3qFW51m0068C93X.png" },
+];

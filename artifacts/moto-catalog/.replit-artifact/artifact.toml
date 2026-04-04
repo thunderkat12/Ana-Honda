@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Catálogo de Motos Honda"
+version = "1.0.0"
+id = "artifacts/moto-catalog"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21325
+
+[services.development]
+run = "pnpm --filter @workspace/moto-catalog run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/moto-catalog", "run", "build" ]
+publicDir = "artifacts/moto-catalog/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21325"
+BASE_PATH = "/"
