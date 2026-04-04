@@ -16,7 +16,6 @@ export interface Motorcycle {
   category: string;
   subcategory: string;
   image: string;
-  video?: string;
   badge?: string;
   specs: MotorcycleSpec;
 }
@@ -48,7 +47,6 @@ export const motorcycles: Motorcycle[] = [
     category: "Street",
     subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/KMLe8p4C27UACaWkYhZhAn4aBRwI4au4zD91SoIb.png",
-    video: "/videos/biz-125-360.mp4",
     specs: {
       motor: "4T SOHC 1 cilindro",
       cilindrada: "124 cc",
