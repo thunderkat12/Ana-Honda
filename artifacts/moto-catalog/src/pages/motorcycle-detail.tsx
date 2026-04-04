@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { SiWhatsapp } from "react-icons/si";
@@ -11,7 +11,10 @@ import {
   Settings,
   RotateCcw,
   Shield,
-  MoveHorizontal,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import { motorcycles } from "@/data/motorcycles";
 
@@ -21,50 +24,41 @@ export default function MotorcycleDetail() {
 
   const motorcycle = motorcycles.find((m) => m.slug === slug);
 
-  // 360° viewer state
-  const [rotation, setRotation] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const dragStartX = useRef(0);
-  const dragStartRotation = useRef(0);
-  const viewerRef = useRef<HTMLDivElement>(null);
+  // Video state
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const [progress, setProgress] = useState(0);
 
-  // Auto-spin hint on load
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!hasInteracted) {
-        setRotation((r) => r + 20);
-        setTimeout(() => setRotation((r) => r - 20), 600);
-      }
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [hasInteracted]);
+  function togglePlay() {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  }
 
-  const startDrag = useCallback((clientX: number) => {
-    setIsDragging(true);
-    setHasInteracted(true);
-    dragStartX.current = clientX;
-    dragStartRotation.current = rotation;
-  }, [rotation]);
+  function toggleMute() {
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  }
 
-  const moveDrag = useCallback((clientX: number) => {
-    if (!isDragging) return;
-    const delta = clientX - dragStartX.current;
-    setRotation(dragStartRotation.current + delta * 0.4);
-  }, [isDragging]);
+  function onTimeUpdate() {
+    if (!videoRef.current) return;
+    const pct = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+    setProgress(isNaN(pct) ? 0 : pct);
+  }
 
-  const endDrag = useCallback(() => setIsDragging(false), []);
-
-  // Mouse events
-  const onMouseDown = (e: React.MouseEvent) => { e.preventDefault(); startDrag(e.clientX); };
-  const onMouseMove = (e: React.MouseEvent) => moveDrag(e.clientX);
-  const onMouseUp = () => endDrag();
-  const onMouseLeave = () => endDrag();
-
-  // Touch events
-  const onTouchStart = (e: React.TouchEvent) => startDrag(e.touches[0].clientX);
-  const onTouchMove = (e: React.TouchEvent) => { e.preventDefault(); moveDrag(e.touches[0].clientX); };
-  const onTouchEnd = () => endDrag();
+  function seekTo(e: React.MouseEvent<HTMLDivElement>) {
+    if (!videoRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    videoRef.current.currentTime = pct * videoRef.current.duration;
+  }
 
   if (!motorcycle) {
     return (
@@ -115,23 +109,24 @@ export default function MotorcycleDetail() {
     { icon: Fuel, label: "Tanque", value: motorcycle.specs.tanque },
   ];
 
+  // Get base URL for assets served from the moto-catalog artifact
+  const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Top nav */}
+
+      {/* ── NAV ─────────────────────────────────────────────────────────── */}
       <nav className="sticky top-0 z-40 w-full flex items-center justify-between px-6 py-4 bg-background/80 backdrop-blur-xl border-b border-white/8">
         <button
           onClick={() => setLocation("/")}
           className="flex items-center gap-2 text-white/60 hover:text-white transition-colors font-semibold text-sm group"
-          data-testid="btn-back"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Catálogo
         </button>
 
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(204,0,0,0.4)]">
-            <span className="text-lg font-black text-white italic leading-none">H</span>
-          </div>
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-[0_0_20px_rgba(204,0,0,0.4)]">
+          <span className="text-lg font-black text-white italic leading-none">H</span>
         </div>
 
         <a
@@ -139,14 +134,13 @@ export default function MotorcycleDetail() {
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 bg-primary hover:bg-primary/85 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-[0_4px_15px_rgba(204,0,0,0.3)]"
-          data-testid="btn-wpp-nav"
         >
           <SiWhatsapp className="w-4 h-4 text-[#25D366]" />
           <span className="hidden sm:inline">Tenho interesse</span>
         </a>
       </nav>
 
-      {/* Hero */}
+      {/* ── HERO ────────────────────────────────────────────────────────── */}
       <section className="relative w-full pt-12 pb-6 px-6">
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-6xl mx-auto">
@@ -154,104 +148,141 @@ export default function MotorcycleDetail() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col md:flex-row md:items-end gap-4 mb-2"
           >
-            <div>
-              {motorcycle.badge && (
-                <span className="inline-block mb-2 px-3 py-1 bg-primary text-white text-xs font-bold tracking-widest uppercase rounded-full">
-                  {motorcycle.badge}
-                </span>
-              )}
-              <p className="text-sm font-semibold tracking-widest text-white/40 uppercase mb-1">
-                {motorcycle.category} · {motorcycle.subcategory}
-              </p>
-              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-none">
-                {motorcycle.name}
-              </h1>
-            </div>
+            {motorcycle.badge && (
+              <span className="inline-block mb-2 px-3 py-1 bg-primary text-white text-xs font-bold tracking-widest uppercase rounded-full">
+                {motorcycle.badge}
+              </span>
+            )}
+            <p className="text-sm font-semibold tracking-widest text-white/40 uppercase mb-1">
+              {motorcycle.category} · {motorcycle.subcategory}
+            </p>
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-none">
+              {motorcycle.name}
+            </h1>
           </motion.div>
         </div>
       </section>
 
-      {/* ─── 360° VIEWER ─────────────────────────────────────────────────── */}
+      {/* ── VISUAL (VIDEO or STATIC IMAGE) ──────────────────────────────── */}
       <section className="w-full py-8 px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col items-center"
-          >
-            <p className="text-sm font-bold tracking-widest text-white/30 uppercase mb-6">
-              Veja todos os ângulos
-            </p>
+        <div className="max-w-6xl mx-auto flex flex-col items-center">
 
-            {/* Viewer container */}
-            <div
-              ref={viewerRef}
-              className={`relative w-full max-w-2xl select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
-              onMouseDown={onMouseDown}
-              onMouseMove={onMouseMove}
-              onMouseUp={onMouseUp}
-              onMouseLeave={onMouseLeave}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-              data-testid="viewer-360"
+          {motorcycle.video ? (
+            /* ── VIDEO PLAYER ─────────────────────────────────────────── */
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="w-full max-w-3xl"
             >
-              {/* Ambient glow */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-96 h-48 bg-primary/15 rounded-full blur-[80px]" />
+              <p className="text-sm font-bold tracking-widest text-white/30 uppercase mb-4 text-center">
+                Veja <span className="text-white/70">todos os ângulos</span>
+              </p>
+
+              <div className="relative rounded-2xl overflow-hidden bg-black border border-white/8 shadow-[0_30px_80px_rgba(0,0,0,0.8)] group">
+                {/* Video */}
+                <video
+                  ref={videoRef}
+                  src={`${baseUrl}${motorcycle.video}`}
+                  poster={motorcycle.image}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  onTimeUpdate={onTimeUpdate}
+                  className="w-full aspect-video object-cover"
+                  data-testid="video-360"
+                />
+
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+                {/* Controls */}
+                <div className="absolute bottom-0 left-0 right-0 px-5 pb-5 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {/* Progress bar */}
+                  <div
+                    className="w-full h-1 bg-white/20 rounded-full cursor-pointer hover:h-1.5 transition-all"
+                    onClick={seekTo}
+                    data-testid="video-progress"
+                  >
+                    <div
+                      className="h-full bg-white rounded-full transition-none pointer-events-none"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={togglePlay}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white transition-colors"
+                      data-testid="btn-play-pause"
+                    >
+                      {isPlaying
+                        ? <Pause className="w-4 h-4" />
+                        : <Play className="w-4 h-4 ml-0.5" />
+                      }
+                    </button>
+
+                    <button
+                      onClick={toggleMute}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white transition-colors"
+                      data-testid="btn-mute"
+                    >
+                      {isMuted
+                        ? <VolumeX className="w-4 h-4" />
+                        : <Volume2 className="w-4 h-4" />
+                      }
+                    </button>
+
+                    <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-md">
+                      <span className="text-xs font-bold tracking-widest text-white/80">Experiência 360°</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Static hint badge */}
+                <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md pointer-events-none group-hover:opacity-0 transition-opacity">
+                  <span className="text-xs font-bold tracking-widest text-white/60">360°</span>
+                </div>
               </div>
 
-              {/* Motorcycle image with 3D rotation */}
-              <div
-                className="relative w-full flex items-center justify-center"
-                style={{ height: "360px", perspective: "1200px" }}
-              >
-                <motion.img
+              <p className="text-xs text-white/25 text-center mt-3 tracking-wider">
+                Passe o mouse para controlar o vídeo
+              </p>
+            </motion.div>
+
+          ) : (
+            /* ── STATIC IMAGE (no fake 360°) ──────────────────────────── */
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="w-full max-w-2xl"
+            >
+              <div className="relative flex items-center justify-center py-8">
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-96 h-48 bg-primary/15 rounded-full blur-[80px]" />
+                </div>
+                <img
                   src={motorcycle.image}
                   alt={motorcycle.name}
-                  draggable={false}
-                  className="w-full h-full object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)] pointer-events-none"
-                  style={{
-                    transform: `perspective(1200px) rotateY(${rotation}deg)`,
-                    transition: isDragging ? "none" : "transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)",
-                    transformOrigin: "center center",
-                    maxHeight: "340px",
-                  }}
-                  animate={{ opacity: 1 }}
-                  initial={{ opacity: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="w-full max-h-80 object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.9)] pointer-events-none"
+                  data-testid="img-static"
                 />
+                <div className="absolute bottom-2 w-2/3 h-4 bg-black/60 rounded-full blur-md" />
               </div>
-
-              {/* Shadow/platform ellipse */}
-              <div className="w-2/3 mx-auto h-4 bg-black/60 rounded-full blur-md -mt-4" />
-
-              {/* 360° control pill */}
-              <div className="flex flex-col items-center gap-2 mt-6">
-                <div className="flex items-center gap-3 bg-black/70 border border-white/10 text-white px-6 py-3 rounded-full backdrop-blur-md shadow-xl">
-                  <ArrowLeft className="w-4 h-4 text-white/60" />
-                  <MoveHorizontal className="w-4 h-4 text-white/40" />
-                  <span className="text-sm font-bold tracking-widest">360°</span>
-                  <MoveHorizontal className="w-4 h-4 text-white/40 scale-x-[-1]" />
-                  <ArrowLeft className="w-4 h-4 text-white/60 scale-x-[-1]" />
-                </div>
-                <p className="text-xs text-white/30 tracking-wider">
-                  {hasInteracted ? "Continue arrastando" : "Clique e arraste"}
-                </p>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
         </div>
       </section>
 
-      {/* ─── SPECS + CTAs ────────────────────────────────────────────────── */}
+      {/* ── SPECS + CTAs ────────────────────────────────────────────────── */}
       <section className="w-full py-12 px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-          {/* Specs */}
+          {/* Specs table */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -268,7 +299,6 @@ export default function MotorcycleDetail() {
                   className={`flex items-center justify-between px-5 py-4 ${
                     i < specItems.length - 1 ? "border-b border-white/6" : ""
                   }`}
-                  data-testid={`spec-row-${label.toLowerCase()}`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="w-4 h-4 text-primary/70 shrink-0" />
@@ -295,26 +325,22 @@ export default function MotorcycleDetail() {
               Fale com um de nossos especialistas e descubra as melhores condições para você sair com sua Honda hoje.
             </p>
 
-            {/* Primary CTA */}
             <a
               href={wppLink}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-4 px-6 bg-primary hover:bg-primary/85 text-white rounded-2xl font-bold flex items-center justify-center gap-3 transition-all duration-200 shadow-[0_8px_30px_rgba(204,0,0,0.35)] hover:shadow-[0_8px_40px_rgba(204,0,0,0.5)] text-base"
-              data-testid="btn-wpp-main"
             >
               <SiWhatsapp className="w-5 h-5 text-[#25D366]" />
               Falar com Especialista
             </a>
 
-            {/* Secondary CTAs */}
             <div className="grid grid-cols-2 gap-3">
               <a
                 href={consortiumLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-4 px-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/25 text-white/80 hover:text-white rounded-2xl font-semibold text-sm text-center transition-all duration-200 flex flex-col items-center gap-1"
-                data-testid="btn-consortium"
               >
                 <span className="text-xs text-white/40 font-normal">Honda</span>
                 Planos de Consórcio
@@ -324,14 +350,12 @@ export default function MotorcycleDetail() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-4 px-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/25 text-white/80 hover:text-white rounded-2xl font-semibold text-sm text-center transition-all duration-200 flex flex-col items-center gap-1"
-                data-testid="btn-financing"
               >
                 <span className="text-xs text-white/40 font-normal">Honda</span>
                 Financiamento
               </a>
             </div>
 
-            {/* Highlight tags */}
             <div className="flex flex-wrap gap-2 mt-2">
               {["Entrega rápida", "Melhores condições", "Suporte especializado", "Garantia Honda"].map((tag) => (
                 <span
@@ -346,12 +370,11 @@ export default function MotorcycleDetail() {
         </div>
       </section>
 
-      {/* Back to catalog */}
+      {/* Back */}
       <section className="w-full py-12 px-6 text-center">
         <button
           onClick={() => setLocation("/")}
           className="inline-flex items-center gap-2 text-white/40 hover:text-white/80 transition-colors text-sm font-semibold group"
-          data-testid="btn-back-bottom"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           Ver todos os modelos Honda
@@ -364,7 +387,6 @@ export default function MotorcycleDetail() {
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:shadow-[0_10px_40px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-110 flex items-center justify-center group"
-        data-testid="btn-floating-wpp"
       >
         <SiWhatsapp className="w-7 h-7" />
         <span className="absolute right-full mr-4 bg-black/80 text-white px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none backdrop-blur-sm border border-white/10">
