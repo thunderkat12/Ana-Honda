@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { SiWhatsapp } from "react-icons/si";
-import { Gauge, Zap, ArrowRight } from "lucide-react";
+import { Gauge, Zap } from "lucide-react";
 import type { Motorcycle } from "@/data/motorcycles";
 
 interface Props {
@@ -118,12 +118,6 @@ export function MotorcycleCard({ motorcycle }: Props) {
               <Zap className="w-3 h-3 text-primary/60" />
               {motorcycle.specs.potencia.split(" @")[0]}
             </span>
-          </div>
-
-          {/* Ver detalhes hint */}
-          <div className="flex items-center justify-center gap-1 text-[11px] text-white/25 group-hover:text-white/50 transition-colors font-semibold">
-            <span>Ver detalhes e experiência 360°</span>
-            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </div>
 
           {/* Divider */}
