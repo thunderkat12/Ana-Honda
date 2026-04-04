@@ -1,131 +1,192 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { motorcycles } from '@/data/motorcycles';
-import { MotorcycleCard } from '@/components/motorcycle-card';
-import { SiWhatsapp } from 'react-icons/si';
+import React, { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { motorcycles } from "@/data/motorcycles";
+import { MotorcycleCard } from "@/components/motorcycle-card";
+import { SiWhatsapp } from "react-icons/si";
+import { Search, X } from "lucide-react";
 
 const CATEGORIES = ["Todos", "Street", "Adventure", "Off-Road", "Big Trail"];
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("Todos");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredMotorcycles = activeCategory === "Todos" 
-    ? motorcycles 
-    : motorcycles.filter(m => m.category === activeCategory);
+  const filtered = useMemo(() => {
+    let result = activeCategory === "Todos"
+      ? motorcycles
+      : motorcycles.filter((m) => m.category === activeCategory);
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (m) =>
+          m.name.toLowerCase().includes(q) ||
+          m.subcategory.toLowerCase().includes(q) ||
+          m.specs.cilindrada.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [activeCategory, searchQuery]);
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
-      {/* Header / Hero */}
-      <header className="relative w-full py-24 px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+
+      {/* ── HEADER ────────────────────────────────────────────────────── */}
+      <header className="relative w-full py-20 px-6 md:px-12 flex flex-col items-center justify-center text-center overflow-hidden">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-background/80 to-background" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[300px] bg-primary/20 blur-[120px] rounded-full opacity-50" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-primary/20 blur-[120px] rounded-full opacity-60" />
         </div>
-        
-        <div className="relative z-10 flex flex-col items-center gap-6 max-w-4xl">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
+
+        <div className="relative z-10 flex flex-col items-center gap-5 max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
             className="flex items-center gap-4"
           >
-            {/* Simple CSS Honda Logo representation */}
-            <div className="w-16 h-16 flex items-center justify-center bg-primary rounded-xl shadow-[0_0_30px_rgba(204,0,0,0.5)]">
-              <span className="text-4xl font-black text-white italic tracking-tighter">H</span>
+            <div className="w-14 h-14 flex items-center justify-center bg-primary rounded-xl shadow-[0_0_30px_rgba(204,0,0,0.5)]">
+              <span className="text-3xl font-black text-white italic tracking-tighter leading-none">H</span>
             </div>
-            <h2 className="text-2xl font-bold tracking-widest text-white/80 uppercase">Motors</h2>
+            <span className="text-2xl font-black tracking-widest text-white/80 uppercase">Honda</span>
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-white drop-shadow-2xl"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white drop-shadow-2xl leading-none"
           >
-            Catálogo <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-red-500">Honda</span>
+            Catálogo <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-red-400">Oficial</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl font-medium"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-base md:text-lg text-white/50 max-w-xl font-medium"
           >
-            Acelere seus sonhos. Encontre a motocicleta perfeita para o seu estilo de vida com as melhores condições do mercado.
+            Encontre sua Honda ideal. {motorcycles.length} modelos com especificações completas.
           </motion.p>
         </div>
       </header>
 
-      <main className="w-full max-w-7xl mx-auto px-6 pb-32">
-        {/* Filter Tabs */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 pb-32">
+
+        {/* ── SEARCH ────────────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-16"
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="relative max-w-lg mx-auto mb-8"
         >
-          {CATEGORIES.map((category) => (
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
+          <input
+            type="search"
+            placeholder="Buscar moto por nome, tipo ou cilindrada..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 focus:border-primary/50 focus:bg-white/8 rounded-2xl pl-11 pr-11 py-3.5 text-sm text-white placeholder:text-white/30 outline-none transition-all duration-200"
+            data-testid="input-search"
+          />
+          {searchQuery && (
             <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`relative px-6 py-3 rounded-full text-sm md:text-base font-bold uppercase tracking-wider transition-colors duration-300 ${
-                activeCategory === category 
-                  ? "text-white" 
-                  : "text-muted-foreground hover:text-white hover:bg-white/5"
-              }`}
-              data-testid={`filter-${category}`}
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+              data-testid="btn-clear-search"
             >
-              {activeCategory === category && (
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </motion.div>
+
+        {/* ── CATEGORY FILTERS ──────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-12"
+        >
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`relative px-5 py-2.5 rounded-full text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${
+                activeCategory === cat
+                  ? "text-white"
+                  : "text-white/40 hover:text-white/80 hover:bg-white/5"
+              }`}
+              data-testid={`filter-${cat}`}
+            >
+              {activeCategory === cat && (
                 <motion.div
                   layoutId="activeFilter"
-                  className="absolute inset-0 bg-primary rounded-full -z-10 shadow-[0_0_20px_rgba(204,0,0,0.4)]"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                  className="absolute inset-0 bg-primary rounded-full -z-10 shadow-[0_0_20px_rgba(204,0,0,0.35)]"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                 />
               )}
-              {category}
+              {cat}
             </button>
           ))}
         </motion.div>
 
-        {/* Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-        >
+        {/* ── RESULTS COUNT ─────────────────────────────────────────────── */}
+        <div className="mb-6 text-center">
+          <p className="text-xs text-white/30 font-semibold tracking-widest uppercase">
+            {filtered.length} {filtered.length === 1 ? "modelo encontrado" : "modelos encontrados"}
+          </p>
+        </div>
+
+        {/* ── GRID ──────────────────────────────────────────────────────── */}
+        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
-            {filteredMotorcycles.map((motorcycle) => (
+            {filtered.map((motorcycle) => (
               <motion.div
                 key={motorcycle.id}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.35 }}
               >
                 <MotorcycleCard motorcycle={motorcycle} />
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
-        
-        {filteredMotorcycles.length === 0 && (
-          <div className="w-full py-20 flex flex-col items-center justify-center text-muted-foreground">
-            <p className="text-xl font-bold">Nenhuma motocicleta encontrada nesta categoria.</p>
-          </div>
+
+        {/* ── EMPTY STATE ───────────────────────────────────────────────── */}
+        {filtered.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full py-24 flex flex-col items-center justify-center gap-4 text-white/30"
+          >
+            <Search className="w-12 h-12 opacity-30" />
+            <p className="text-xl font-bold">Nenhuma moto encontrada.</p>
+            <p className="text-sm">Tente outro nome ou categoria.</p>
+            <button
+              onClick={() => { setSearchQuery(""); setActiveCategory("Todos"); }}
+              className="mt-2 px-5 py-2 bg-white/8 border border-white/10 rounded-xl text-white/60 hover:text-white text-sm font-semibold transition-colors"
+            >
+              Limpar filtros
+            </button>
+          </motion.div>
         )}
       </main>
 
-      {/* Floating WhatsApp Button */}
+      {/* Floating WhatsApp */}
       <a
-        href="https://wa.me/556199918978?text=Olá! Gostaria de mais informações sobre o consórcio e financiamento Honda."
+        href="https://wa.me/556199918978?text=Olá! Gostaria de mais informações sobre o catálogo Honda."
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:shadow-[0_10px_40px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-110 flex items-center justify-center group"
         data-testid="btn-floating-wpp"
       >
-        <SiWhatsapp className="w-8 h-8" />
+        <SiWhatsapp className="w-7 h-7" />
         <span className="absolute right-full mr-4 bg-black/80 text-white px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none backdrop-blur-sm border border-white/10">
-          Fale com a gente!
+          Fale conosco!
         </span>
       </a>
     </div>

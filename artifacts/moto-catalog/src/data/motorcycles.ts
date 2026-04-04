@@ -11,17 +11,23 @@ export interface MotorcycleSpec {
 
 export interface Motorcycle {
   id: number;
+  slug: string;
   name: string;
   category: string;
+  subcategory: string;
   image: string;
+  badge?: string;
   specs: MotorcycleSpec;
 }
 
 export const motorcycles: Motorcycle[] = [
+  // ─── STREET ──────────────────────────────────────────────────────────
   {
     id: 1,
-    name: "POP 110i ES",
+    slug: "pop-110i-es",
+    name: "Pop 110i ES",
     category: "Street",
+    subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/JOngXmTC5JIdufOn1FFyuzIkAo9iRjDuW3xOT9wi.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -36,24 +42,10 @@ export const motorcycles: Motorcycle[] = [
   },
   {
     id: 2,
-    name: "POP 110i ES +10%",
+    slug: "biz-125-es",
+    name: "Biz 125 ES",
     category: "Street",
-    image: "https://vendedor.site/storage/products/NSdHtu7pgJjKN6448sUCZJvGvjosdfiwZWkTYc3p.png",
-    specs: {
-      motor: "4T SOHC 1 cilindro",
-      cilindrada: "109 cc",
-      potencia: "8,0 cv @ 7.500 rpm",
-      torque: "8,7 Nm @ 5.500 rpm",
-      freios: "Tambor D/T",
-      cambio: "4 marchas semi-automático",
-      peso: "99 kg",
-      tanque: "3,7 L",
-    },
-  },
-  {
-    id: 3,
-    name: "BIZ 125 ES",
-    category: "Street",
+    subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/KMLe8p4C27UACaWkYhZhAn4aBRwI4au4zD91SoIb.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -67,9 +59,29 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 4,
-    name: "ELITE 125",
+    id: 3,
+    slug: "biz-125-ex",
+    name: "Biz 125 EX",
     category: "Street",
+    subcategory: "Urbana",
+    image: "https://vendedor.site/storage/products/rOLnG3mP6hSeYpVy0bfYyvwaKBn9S6IKoPH8cGzr.png",
+    specs: {
+      motor: "4T SOHC 1 cilindro",
+      cilindrada: "124 cc",
+      potencia: "9,4 cv @ 7.500 rpm",
+      torque: "10,6 Nm @ 6.000 rpm",
+      freios: "Disco D / Tambor T",
+      cambio: "4 marchas semi-automático",
+      peso: "105 kg",
+      tanque: "4,2 L",
+    },
+  },
+  {
+    id: 4,
+    slug: "elite-125",
+    name: "Elite 125",
+    category: "Street",
+    subcategory: "Scooter",
     image: "https://vendedor.site/storage/products/gvfYG6h8ifcR5uAPsM1EmrgJww4qVzWV3nGYwnG9.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -84,24 +96,10 @@ export const motorcycles: Motorcycle[] = [
   },
   {
     id: 5,
-    name: "BIZ 125 EX",
+    slug: "cg-160-start",
+    name: "CG 160 Start",
     category: "Street",
-    image: "https://vendedor.site/storage/products/rOLnG3mP6hSeYpVy0bfYyvwaKBn9S6IKoPH8cGzr.png",
-    specs: {
-      motor: "4T SOHC 1 cilindro",
-      cilindrada: "124 cc",
-      potencia: "9,4 cv @ 7.500 rpm",
-      torque: "10,6 Nm @ 6.000 rpm",
-      freios: "Disco D / Tambor T",
-      cambio: "4 marchas semi-automático",
-      peso: "105 kg",
-      tanque: "4,2 L",
-    },
-  },
-  {
-    id: 6,
-    name: "CG 160 START",
-    category: "Street",
+    subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/x9l2upZZgCVE01p8QsgfNSLfn1eZWrexcNbgm1fD.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -115,25 +113,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 7,
-    name: "PCX CBS",
+    id: 6,
+    slug: "cg-160-fan",
+    name: "CG 160 Fan",
     category: "Street",
-    image: "https://vendedor.site/storage/products/Sflm7trmjrMP7hw3aGKpUBSl7yrPoDTc9ApXZUhy.png",
-    specs: {
-      motor: "4T SOHC 1 cilindro",
-      cilindrada: "156 cc",
-      potencia: "13,4 cv @ 8.500 rpm",
-      torque: "14,8 Nm @ 6.500 rpm",
-      freios: "Disco D / Tambor T (CBS)",
-      cambio: "CVT automático",
-      peso: "132 kg",
-      tanque: "8,1 L",
-    },
-  },
-  {
-    id: 8,
-    name: "CG 160 FAN",
-    category: "Street",
+    subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/xuS073jzyK7OZtudAAnJ9IZlPVOBLQ7b4mH3fqvm.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -147,9 +131,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 9,
-    name: "CG 160 TITAN",
+    id: 7,
+    slug: "cg-160-titan",
+    name: "CG 160 Titan",
     category: "Street",
+    subcategory: "Urbana",
     image: "https://vendedor.site/storage/products/aB5v5NIO7Gf2TlJ154bucmWYMdvZTToBoJP4PIMr.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -163,9 +149,29 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 10,
+    id: 8,
+    slug: "pcx-cbs",
+    name: "PCX CBS",
+    category: "Street",
+    subcategory: "Scooter",
+    image: "https://vendedor.site/storage/products/Sflm7trmjrMP7hw3aGKpUBSl7yrPoDTc9ApXZUhy.png",
+    specs: {
+      motor: "4T SOHC 1 cilindro",
+      cilindrada: "156 cc",
+      potencia: "13,4 cv @ 8.500 rpm",
+      torque: "14,8 Nm @ 6.500 rpm",
+      freios: "Disco D / Tambor T (CBS)",
+      cambio: "CVT automático",
+      peso: "132 kg",
+      tanque: "8,1 L",
+    },
+  },
+  {
+    id: 9,
+    slug: "pcx-abs",
     name: "PCX ABS",
     category: "Street",
+    subcategory: "Scooter",
     image: "https://vendedor.site/storage/products/2KGp7k8xxAAxJfbA61qDD2KR1Nbl9BUledXVH070.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -179,9 +185,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 11,
-    name: "CB 300F TWISTER CBS",
+    id: 10,
+    slug: "cb-300f-twister-cbs",
+    name: "CB 300F Twister CBS",
     category: "Street",
+    subcategory: "Naked",
     image: "https://vendedor.site/storage/products/d4wGzH59fpMRRunge9Pz7pKs4CjkYiM7aFcTt2nN.png",
     specs: {
       motor: "4T DOHC 1 cilindro",
@@ -195,9 +203,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 12,
-    name: "CB 300F TWISTER ABS",
+    id: 11,
+    slug: "cb-300f-twister-abs",
+    name: "CB 300F Twister ABS",
     category: "Street",
+    subcategory: "Naked",
     image: "https://vendedor.site/storage/products/NdNC49RPuYAwFa5mKmoHAzHmx2aL3oJ3b7ASJgfi.png",
     specs: {
       motor: "4T DOHC 1 cilindro",
@@ -211,12 +221,15 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 13,
-    name: "CB 500 HORNET",
+    id: 12,
+    slug: "cb-500-hornet",
+    name: "CB 500 Hornet",
     category: "Street",
+    subcategory: "Naked",
     image: "https://vendedor.site/storage/products/R9efAU5w3OmMtmuCimCDl2Xd1BGyP6gNjUmgiFws.png",
+    badge: "Lançamento",
     specs: {
-      motor: "4T DOHC 2 cilindros",
+      motor: "4T DOHC 2 cilindros paralelos",
       cilindrada: "471 cc",
       potencia: "47,6 cv @ 8.600 rpm",
       torque: "43,5 Nm @ 6.500 rpm",
@@ -227,12 +240,33 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 14,
-    name: "CB 750 HORNET",
+    id: 13,
+    slug: "cb-650r-e-clutch",
+    name: "CB 650R E-Clutch",
     category: "Street",
+    subcategory: "Naked",
+    image: "https://vendedor.site/storage/products/Andg8LJMwBMjIKNp38nOGstSX1XNy3oJBp6Wuka5.png",
+    badge: "Lançamento",
+    specs: {
+      motor: "4T DOHC 4 cilindros em linha",
+      cilindrada: "648 cc",
+      potencia: "95,0 cv @ 12.000 rpm",
+      torque: "64,0 Nm @ 8.500 rpm",
+      freios: "Disco D/T (ABS)",
+      cambio: "6 marchas E-Clutch",
+      peso: "202 kg",
+      tanque: "15,4 L",
+    },
+  },
+  {
+    id: 14,
+    slug: "cb-750-hornet",
+    name: "CB 750 Hornet",
+    category: "Street",
+    subcategory: "Naked",
     image: "https://vendedor.site/storage/products/OnYBHeEDvt7jLJ9EJOdIvEcmhzPk6gXnHQVh2acy.png",
     specs: {
-      motor: "4T DOHC 2 cilindros",
+      motor: "4T DOHC 2 cilindros paralelos",
       cilindrada: "755 cc",
       potencia: "92,0 cv @ 9.500 rpm",
       torque: "75,0 Nm @ 7.250 rpm",
@@ -244,27 +278,13 @@ export const motorcycles: Motorcycle[] = [
   },
   {
     id: 15,
-    name: "CB 650R E-CLUTCH",
+    slug: "cb-1000r",
+    name: "CB 1000R",
     category: "Street",
-    image: "https://vendedor.site/storage/products/Andg8LJMwBMjIKNp38nOGstSX1XNy3oJBp6Wuka5.png",
-    specs: {
-      motor: "4T DOHC 4 cilindros",
-      cilindrada: "648 cc",
-      potencia: "95,0 cv @ 12.000 rpm",
-      torque: "64,0 Nm @ 8.500 rpm",
-      freios: "Disco D/T (ABS)",
-      cambio: "6 marchas E-Clutch",
-      peso: "202 kg",
-      tanque: "15,4 L",
-    },
-  },
-  {
-    id: 16,
-    name: "CB 1000R (70% do valor)",
-    category: "Street",
+    subcategory: "Naked",
     image: "https://vendedor.site/storage/products/MgtKpKelxKbxExN5gOS8pHPtrqhhL00R8RYiQhoF.png",
     specs: {
-      motor: "4T DOHC 4 cilindros",
+      motor: "4T DOHC 4 cilindros em linha",
       cilindrada: "998 cc",
       potencia: "145,5 cv @ 10.500 rpm",
       torque: "104,0 Nm @ 8.500 rpm",
@@ -274,10 +294,14 @@ export const motorcycles: Motorcycle[] = [
       tanque: "16,1 L",
     },
   },
+
+  // ─── ADVENTURE ───────────────────────────────────────────────────────
   {
-    id: 17,
-    name: "NXR 160 BROS CBS",
+    id: 16,
+    slug: "nxr-160-bros-cbs",
+    name: "NXR 160 Bros CBS",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/uPwpsnV0yPGYPUS7qUbIr2eq2CV2uOkySdSnpeH9.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -291,9 +315,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 18,
-    name: "NXR 160 BROS ABS",
+    id: 17,
+    slug: "nxr-160-bros-abs",
+    name: "NXR 160 Bros ABS",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/7DGCKtLMUZ81i5u7gSkSeKSnD41NvSvPHjzxkstD.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -307,9 +333,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 19,
+    id: 18,
+    slug: "xre-190",
     name: "XRE 190",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/OLNAfGURRqn8UeRwU2bgwKEN4wJ8yYP5FVZS7vaS.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -323,9 +351,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 20,
-    name: "HONDA ADV",
+    id: 19,
+    slug: "honda-adv",
+    name: "Honda ADV",
     category: "Adventure",
+    subcategory: "Scooter Adventure",
     image: "https://vendedor.site/storage/products/m5F3bNTVeLRbibDZIAWAMv2jWLsEuWjny1Y9Ukj0.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -339,9 +369,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 21,
-    name: "XR 300L TORNADO",
+    id: 20,
+    slug: "xr-300l-tornado",
+    name: "XR 300L Tornado",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/RQmyfhTdrcht7UqJNorbpJEYOk0S6lG2uO5RBIWn.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -355,9 +387,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 22,
-    name: "SAHARA 300",
+    id: 21,
+    slug: "sahara-300",
+    name: "XRE 300 Sahara",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/vgG6xKUWnqxATmPRRg5IPVPj4oX4HgsjH9qA069R.png",
     specs: {
       motor: "4T DOHC 1 cilindro",
@@ -371,9 +405,11 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 23,
-    name: "SAHARA 300 ADV",
+    id: 22,
+    slug: "sahara-300-adv",
+    name: "XRE 300 Sahara ADV",
     category: "Adventure",
+    subcategory: "Trail",
     image: "https://vendedor.site/storage/products/hIAwtMdshupuqYKHzFd0QG2iCATvYmsN97iJhLg5.png",
     specs: {
       motor: "4T DOHC 1 cilindro",
@@ -387,12 +423,15 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 24,
+    id: 23,
+    slug: "nx-500",
     name: "NX 500",
     category: "Adventure",
+    subcategory: "Crossover",
     image: "https://vendedor.site/storage/products/BIz547uTf0qN3JvnQJflgRuKRNYk83IxXxdJZ5n6.png",
+    badge: "Lançamento",
     specs: {
-      motor: "4T DOHC 2 cilindros",
+      motor: "4T DOHC 2 cilindros paralelos",
       cilindrada: "471 cc",
       potencia: "47,6 cv @ 8.600 rpm",
       torque: "43,5 Nm @ 6.500 rpm",
@@ -403,12 +442,15 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 25,
+    id: 24,
+    slug: "nc-750x-abs",
     name: "NC 750X ABS MT",
     category: "Adventure",
+    subcategory: "Crossover",
     image: "https://vendedor.site/storage/products/N0q97ctEszip2ExGWuY9RaK5bZ26B0Zs2pnuwjls.png",
+    badge: "Lançamento",
     specs: {
-      motor: "4T DOHC 2 cilindros",
+      motor: "4T DOHC 2 cilindros paralelos",
       cilindrada: "745 cc",
       potencia: "57,7 cv @ 6.750 rpm",
       torque: "68,9 Nm @ 4.750 rpm",
@@ -419,12 +461,15 @@ export const motorcycles: Motorcycle[] = [
     },
   },
   {
-    id: 26,
-    name: "CRF 1100L AFRICA TWIN MT",
+    id: 25,
+    slug: "crf-1100l-africa-twin",
+    name: "CRF 1100L Africa Twin",
     category: "Adventure",
+    subcategory: "Big Trail",
     image: "https://vendedor.site/storage/products/2sRlwcTZ7d16R7s9YATgMOGM9PP8TM6YRmT0Frk6.png",
+    badge: "Lançamento",
     specs: {
-      motor: "4T DOHC 2 cilindros",
+      motor: "4T DOHC 2 cilindros paralelos",
       cilindrada: "1.084 cc",
       potencia: "102,0 cv @ 7.500 rpm",
       torque: "105,0 Nm @ 6.250 rpm",
@@ -434,11 +479,37 @@ export const motorcycles: Motorcycle[] = [
       tanque: "18,8 L",
     },
   },
+
+  // ─── BIG TRAIL ───────────────────────────────────────────────────────
+  {
+    id: 26,
+    slug: "xl-750-transalp",
+    name: "XL 750 Transalp",
+    category: "Big Trail",
+    subcategory: "Big Trail",
+    image: "https://vendedor.site/storage/products/eGKpBSVfX2mztA5DWLonifNxg3qFW51m0068C93X.png",
+    badge: "Lançamento",
+    specs: {
+      motor: "4T DOHC 2 cilindros paralelos",
+      cilindrada: "755 cc",
+      potencia: "92,0 cv @ 9.500 rpm",
+      torque: "75,0 Nm @ 7.250 rpm",
+      freios: "Disco D/T (ABS)",
+      cambio: "6 marchas",
+      peso: "208 kg",
+      tanque: "16,3 L",
+    },
+  },
+
+  // ─── OFF-ROAD ─────────────────────────────────────────────────────────
   {
     id: 27,
+    slug: "crf-300f",
     name: "CRF 300F",
     category: "Off-Road",
+    subcategory: "Enduro",
     image: "https://vendedor.site/storage/products/6aTAV3X9t3JIqf4dMbk9EsIEhDWFf1g7yhvgHsDn.png",
+    badge: "Lançamento",
     specs: {
       motor: "4T DOHC 1 cilindro",
       cilindrada: "286 cc",
@@ -452,8 +523,10 @@ export const motorcycles: Motorcycle[] = [
   },
   {
     id: 28,
-    name: "TRX 420 FOURTRAX",
+    slug: "trx-420-fourtrax",
+    name: "TRX 420 Fourtrax",
     category: "Off-Road",
+    subcategory: "Quadriciclo",
     image: "https://vendedor.site/storage/products/D0b1gPnO4JKh2b9kMWJO3mfqnoZjlfmjCX7yYzJz.png",
     specs: {
       motor: "4T SOHC 1 cilindro",
@@ -464,22 +537,6 @@ export const motorcycles: Motorcycle[] = [
       cambio: "5 marchas automático",
       peso: "282 kg",
       tanque: "15,1 L",
-    },
-  },
-  {
-    id: 29,
-    name: "XL 750 TRANSALP",
-    category: "Big Trail",
-    image: "https://vendedor.site/storage/products/eGKpBSVfX2mztA5DWLonifNxg3qFW51m0068C93X.png",
-    specs: {
-      motor: "4T DOHC 2 cilindros",
-      cilindrada: "755 cc",
-      potencia: "92,0 cv @ 9.500 rpm",
-      torque: "75,0 Nm @ 7.250 rpm",
-      freios: "Disco D/T (ABS)",
-      cambio: "6 marchas",
-      peso: "208 kg",
-      tanque: "16,3 L",
     },
   },
 ];
