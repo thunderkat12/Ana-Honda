@@ -5,6 +5,8 @@ import { SiWhatsapp } from "react-icons/si";
 import { ArrowLeft, Gauge, Zap, Fuel, Weight, Settings, RotateCcw, Shield } from "lucide-react";
 import { motorcycles } from "@/data/motorcycles";
 
+const whatsappNumber = "556191897810";
+
 export default function MotorcycleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [, setLocation] = useLocation();
@@ -37,17 +39,17 @@ export default function MotorcycleDetail() {
     `• Freios: ${motorcycle.specs.freios}\n\n` +
     `Gostaria de mais informações sobre preços, financiamento e consórcio.`
   );
-  const wppLink = `https://wa.me/556199918978?text=${wppText}`;
+  const wppLink = `https://wa.me/${whatsappNumber}?text=${wppText}`;
 
   const consortiumText = encodeURIComponent(
     `Olá! Gostaria de informações sobre os *Planos de Consórcio* para a *${motorcycle.name}* (${motorcycle.specs.cilindrada}).`
   );
-  const consortiumLink = `https://wa.me/556199918978?text=${consortiumText}`;
+  const consortiumLink = `https://wa.me/${whatsappNumber}?text=${consortiumText}`;
 
   const financingText = encodeURIComponent(
     `Olá! Gostaria de informações sobre o *Financiamento* da *${motorcycle.name}* (${motorcycle.specs.cilindrada}). Quais são as condições disponíveis?`
   );
-  const financingLink = `https://wa.me/556199918978?text=${financingText}`;
+  const financingLink = `https://wa.me/${whatsappNumber}?text=${financingText}`;
 
   const specItems = [
     { icon: Settings, label: "Motor", value: motorcycle.specs.motor },

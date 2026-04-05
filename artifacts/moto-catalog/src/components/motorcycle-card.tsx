@@ -9,6 +9,8 @@ interface Props {
   motorcycle: Motorcycle;
 }
 
+const whatsappNumber = "556191897810";
+
 export function MotorcycleCard({ motorcycle }: Props) {
   const [, setLocation] = useLocation();
   const ref = useRef<HTMLDivElement>(null);
@@ -36,17 +38,17 @@ export function MotorcycleCard({ motorcycle }: Props) {
   const wppText = encodeURIComponent(
     `Olá! Tenho interesse na moto *${motorcycle.name}* (${motorcycle.specs.cilindrada}). Gostaria de mais informações sobre preços, financiamento e consórcio.`
   );
-  const wppLink = `https://wa.me/556199918978?text=${wppText}`;
+  const wppLink = `https://wa.me/${whatsappNumber}?text=${wppText}`;
 
   const consortiumText = encodeURIComponent(
     `Olá! Gostaria de informações sobre os *Planos de Consórcio* para a *${motorcycle.name}* (${motorcycle.specs.cilindrada}).`
   );
-  const consortiumLink = `https://wa.me/556199918978?text=${consortiumText}`;
+  const consortiumLink = `https://wa.me/${whatsappNumber}?text=${consortiumText}`;
 
   const financingText = encodeURIComponent(
     `Olá! Gostaria de informações sobre o *Financiamento* da *${motorcycle.name}* (${motorcycle.specs.cilindrada}).`
   );
-  const financingLink = `https://wa.me/556199918978?text=${financingText}`;
+  const financingLink = `https://wa.me/${whatsappNumber}?text=${financingText}`;
 
   function goToDetail(e: React.MouseEvent) {
     // Don't navigate if clicking a link/button inside the card

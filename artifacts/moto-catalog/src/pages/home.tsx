@@ -1,24 +1,17 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { motorcycles } from "@/data/motorcycles";
 import { MotorcycleCard } from "@/components/motorcycle-card";
 import { SiWhatsapp } from "react-icons/si";
-import { Search, X, Camera, User } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 const CATEGORIES = ["Todos", "Street", "Adventure", "Off-Road", "Big Trail"];
+const profilePhoto = `${import.meta.env.BASE_URL}ana-honda.jpg`;
+const whatsappNumber = "556191897810";
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sellerPhoto, setSellerPhoto] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    setSellerPhoto(url);
-  }
 
   const filtered = useMemo(() => {
     let result = activeCategory === "Todos"
@@ -55,37 +48,14 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center gap-3"
           >
-            {/* Seller avatar */}
-            <div className="relative group">
-              <div
-                className="w-24 h-24 rounded-full border-[3px] border-primary shadow-[0_0_30px_rgba(204,0,0,0.5)] overflow-hidden bg-[#1a1a1a] flex items-center justify-center cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {sellerPhoto ? (
-                  <img
-                    src={sellerPhoto}
-                    alt="Foto da vendedora"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <User className="w-10 h-10 text-white/20" />
-                )}
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full border-[3px] border-primary shadow-[0_0_30px_rgba(204,0,0,0.5)] overflow-hidden bg-[#1a1a1a]">
+                <img
+                  src={profilePhoto}
+                  alt="Foto de perfil da Ana Honda"
+                  className="w-full h-full object-cover"
+                />
               </div>
-              {/* Camera overlay */}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute bottom-0 right-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center border-2 border-background shadow-lg hover:bg-primary/80 transition-colors"
-                title="Adicionar foto"
-              >
-                <Camera className="w-4 h-4 text-white" />
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoChange}
-              />
             </div>
 
             {/* Name */}
@@ -220,7 +190,7 @@ export default function Home() {
 
       {/* Floating WhatsApp */}
       <a
-        href="https://wa.me/556199918978?text=Olá! Gostaria de mais informações sobre o catálogo Honda."
+        href={`https://wa.me/${whatsappNumber}?text=Olá! Gostaria de mais informações sobre o catálogo Honda.`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-8 right-8 z-50 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-[0_10px_30px_rgba(37,211,102,0.4)] hover:shadow-[0_10px_40px_rgba(37,211,102,0.6)] transition-all duration-300 hover:scale-110 flex items-center justify-center group"
